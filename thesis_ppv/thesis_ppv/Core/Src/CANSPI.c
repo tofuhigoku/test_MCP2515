@@ -48,7 +48,7 @@ void CANSPI_Sleep(void)
 }
 
 /* Initialize CAN */
-bool CANSPI_Initialize(void)
+e_CANSPI_RETURN_t CANSPI_Initialize(void)
 {
   RXF0 RXF0reg;
   RXF1 RXF1reg;
@@ -111,7 +111,7 @@ bool CANSPI_Initialize(void)
   /* Change mode as configuration mode */
   if(!MCP2515_SetConfigMode())
   {
-    return false;
+    return e_CANSPI_SETCONFIGMODE_RETURN_FALSE;
   }
 
   /* Configure filter & mask */
@@ -154,15 +154,15 @@ bool CANSPI_Initialize(void)
 
   /* Normal 모드로 설정 */
   if(!MCP2515_SetNormalMode())
-    return false;
+    return e_CANSPI_SETNORMALMODE_RETURN_FALSE;
 
-  return true;
+  return e_CANSPI_RETURN_OK;
 }
 
 /* Transmit CAN message */
-uint8_t CANSPI_Transmit(uCAN_MSG *tempCanMsg)
+e_CANSPI_RETURN_t CANSPI_Transmit(uCAN_MSG *tempCanMsg)
 {
-  uint8_t returnValue = 0;
+	e_CANSPI_RETURN_t returnValue = e_CANSPI_RETURN_FALSE;
 
   idReg.tempSIDH = 0;
   idReg.tempSIDL = 0;
@@ -183,7 +183,7 @@ uint8_t CANSPI_Transmit(uCAN_MSG *tempCanMsg)
     /* Request to transmit */
     MCP2515_RequestToSend(MCP2515_RTS_TX0);
 
-    returnValue = 1;
+    returnValue = e_CANSPI_TXBUF0_EMPTY;
   }
   else if (ctrlStatus.TXB1REQ != 1)
   {
@@ -192,7 +192,7 @@ uint8_t CANSPI_Transmit(uCAN_MSG *tempCanMsg)
     MCP2515_LoadTxSequence(MCP2515_LOAD_TXB1SIDH, &(idReg.tempSIDH), tempCanMsg->frame.dlc, &(tempCanMsg->frame.data0));
     MCP2515_RequestToSend(MCP2515_RTS_TX1);
 
-    returnValue = 1;
+    returnValue = e_CANSPI_TXBUF1_EMPTY;
   }
   else if (ctrlStatus.TXB2REQ != 1)
   {
@@ -201,16 +201,16 @@ uint8_t CANSPI_Transmit(uCAN_MSG *tempCanMsg)
     MCP2515_LoadTxSequence(MCP2515_LOAD_TXB2SIDH, &(idReg.tempSIDH), tempCanMsg->frame.dlc, &(tempCanMsg->frame.data0));
     MCP2515_RequestToSend(MCP2515_RTS_TX2);
 
-    returnValue = 1;
+    returnValue = e_CANSPI_TXBUF2_EMPTY;
   }
 
   return (returnValue);
 }
 
 /* Receive CAN message */
-uint8_t CANSPI_Receive(uCAN_MSG *tempCanMsg)
+e_CANSPI_RETURN_t CANSPI_Receive(uCAN_MSG *tempCanMsg)
 {
-  uint8_t returnValue = 0;
+	e_CANSPI_RETURN_t returnValue = e_CANSPI_RETURN_FALSE;
   rx_reg_t rxReg;
   ctrl_rx_status_t rxStatus;
 
@@ -220,7 +220,7 @@ uint8_t CANSPI_Receive(uCAN_MSG *tempCanMsg)
   if (rxStatus.rxBuffer != 0)
   {
     /* finding buffer which has a message */
-    if ((rxStatus.rxBuffer == MSG_IN_RXB0)|(rxStatus.rxBuffer == MSG_IN_BOTH_BUFFERS))
+    if ((rxStatus.rxBuffer == MSG_IN_BOTH_BUFFERS)||(rxStatus.rxBuffer == MSG_IN_RXB0))
     {
       MCP2515_ReadRxSequence(MCP2515_READ_RXB0SIDH, rxReg.rx_reg_array, sizeof(rxReg.rx_reg_array));
     }
@@ -252,7 +252,7 @@ uint8_t CANSPI_Receive(uCAN_MSG *tempCanMsg)
     tempCanMsg->frame.data6 = rxReg.RXBnD6;
     tempCanMsg->frame.data7 = rxReg.RXBnD7;
 
-    returnValue = 1;
+    returnValue = e_CANSPI_RETURN_OK;
   }
 
   return (returnValue);

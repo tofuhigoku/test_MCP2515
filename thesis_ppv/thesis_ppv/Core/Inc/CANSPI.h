@@ -27,8 +27,14 @@
 #include "main.h"
 
 typedef enum {
+	e_CANSPI_RETURN_OK = 0,
+	e_CANSPI_RETURN_FALSE = 0xFF,
 	e_CANSPI_SETCONFIGMODE_RETURN_FALSE = 1,
 	e_CANSPI_SETNORMALMODE_RETURN_FALSE = 2,
+
+	e_CANSPI_TXBUF0_EMPTY = 10,
+	e_CANSPI_TXBUF1_EMPTY = 11,
+	e_CANSPI_TXBUF2_EMPTY = 12,
 }e_CANSPI_RETURN_t;
 
 typedef union {
@@ -51,10 +57,10 @@ typedef union {
 #define dSTANDARD_CAN_MSG_ID_2_0B 1
 #define dEXTENDED_CAN_MSG_ID_2_0B 2
 
-bool CANSPI_Initialize(void);
+e_CANSPI_RETURN_t CANSPI_Initialize(void);
 void CANSPI_Sleep(void);
-uint8_t CANSPI_Transmit(uCAN_MSG *tempCanMsg);
-uint8_t CANSPI_Receive(uCAN_MSG *tempCanMsg);
+e_CANSPI_RETURN_t CANSPI_Transmit(uCAN_MSG *tempCanMsg);
+e_CANSPI_RETURN_t CANSPI_Receive(uCAN_MSG *tempCanMsg);
 uint8_t CANSPI_messagesInBuffer(void);
 uint8_t CANSPI_isBussOff(void);
 uint8_t CANSPI_isRxErrorPassive(void);

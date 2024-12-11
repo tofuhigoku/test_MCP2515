@@ -113,18 +113,18 @@ int main(void)
 	  		HAL_GPIO_TogglePin(GPIOC, GPIO_PIN_13);
 	  	}
 
-	  //	txMessage.frame.idType = dSTANDARD_CAN_MSG_ID_2_0B;
-	  //	txMessage.frame.id = 0x103;
-	  //	txMessage.frame.dlc = 8;
-	  //	txMessage.frame.data0 = 0;
-	  //	txMessage.frame.data1 = 1;
-	  //	txMessage.frame.data2 = 2;
-	  //	txMessage.frame.data3 = 3;
-	  //	txMessage.frame.data4 = 4;
-	  //	txMessage.frame.data5 = 5;
-	  //	txMessage.frame.data6 = 6;
-	  //	txMessage.frame.data7 = 7;
-	  //	CANSPI_Transmit(&txMessage);
+//	  	txMessage.frame.idType = dSTANDARD_CAN_MSG_ID_2_0B;
+//	  	txMessage.frame.id = 0x103;
+//	  	txMessage.frame.dlc = 8;
+//	  	txMessage.frame.data0 = 0;
+//	  	txMessage.frame.data1 = 1;
+//	  	txMessage.frame.data2 = 2;
+//	  	txMessage.frame.data3 = 3;
+//	  	txMessage.frame.data4 = 4;
+//	  	txMessage.frame.data5 = 5;
+//	  	txMessage.frame.data6 = 6;
+//	  	txMessage.frame.data7 = 7;
+//	  	CANSPI_Transmit(&txMessage);
 
 	  	HAL_Delay(100);
   }
